@@ -14,6 +14,7 @@ func main() {
 	r.Use(cors.Default()) // Habilita CORS para todos os domínios
 
 	r.POST("/send-email", handler.SendEmailHandler)
+	r.POST("/send-email-support", handler.SendEmailSupportHandler)
 
-	r.Run(":8080")
+	r.Run(":8093")
 }
