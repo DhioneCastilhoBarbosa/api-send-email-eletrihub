@@ -61,7 +61,7 @@ func SendEmailSupport(req model.EmailRequest) error {
 	htmlBody := fmt.Sprintf(`
 		<html>
 		<body style="background-color:black;color:white;padding:20px;font-family:sans-serif;">
-			<div style="text-align:left;margin-bottom:20px;">
+			<div style="text-align:left;margin-bottom:20px;margin-left:10px;">
 				<img src="https://raw.githubusercontent.com/DhioneCastilhoBarbosa/hubinscar/dbae7b6ec92e75430765ddac74ec034f8714adde/src/assets/LOGO%%20BRANCA.png" alt="Logo" style="max-width:100px;">
 			</div>
 			<div style="color:black;background-color:white;padding:20px;border-radius:10px;">
