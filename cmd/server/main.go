@@ -15,6 +15,6 @@ func main() {
 
 	r.POST("/send-email", handler.SendEmailHandler)
 	r.POST("/send-email-support", handler.SendEmailSupportHandler)
-
+	r.POST("/send-email-new-installer", handler.PostInstallerHandler)
 	r.Run(":8093")
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/DHIONECASTILHOBARBOSA/email-api/internal/mail"
@@ -38,4 +39,21 @@ func SendEmailSupportHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "E-mail de suporte enviado com sucesso!"})
+}
+
+func PostInstallerHandler(c *gin.Context) {
+	var data model.InstallerData
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(400, gin.H{"error": "Dados inválidos"})
+		return
+	}
+
+	// Envia o e-mail
+	if err := mail.SendEmailNewInstaller(data); err != nil {
+		c.JSON(500, gin.H{"error": fmt.Sprintf("Erro ao enviar email: %v", err)})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Cadastro recebido com sucesso!"})
 }
