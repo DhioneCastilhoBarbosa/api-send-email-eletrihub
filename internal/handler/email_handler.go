@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/DHIONECASTILHOBARBOSA/email-api/internal/mail"
 	"github.com/DHIONECASTILHOBARBOSA/email-api/internal/model"
@@ -56,4 +57,25 @@ func PostInstallerHandler(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Cadastro recebido com sucesso!"})
+}
+
+func PostWithdrawRequestHandler(c *gin.Context) {
+	var data model.WithdrawMoneyRequest
+
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+		return
+	}
+
+	if os.Getenv("RECEIVER_EMAIL") == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Email de destino não configurado"})
+		return
+	}
+
+	if err := mail.SendEmailWithdrawRequest(data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Erro ao enviar e-mail: %v", err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Solicitação de saque enviada com sucesso!"})
 }

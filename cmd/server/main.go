@@ -16,5 +16,6 @@ func main() {
 	r.POST("/send-email", handler.SendEmailHandler)
 	r.POST("/send-email-support", handler.SendEmailSupportHandler)
 	r.POST("/send-email-new-installer", handler.PostInstallerHandler)
+	r.POST("/withdrawal-request", handler.PostWithdrawRequestHandler)
 	r.Run(":8093")
 }

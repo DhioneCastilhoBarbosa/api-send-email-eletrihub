@@ -157,3 +157,57 @@ func SendEmailNewInstaller(data model.InstallerData) error {
 
 	return d.DialAndSend(m)
 }
+
+func SendEmailWithdrawRequest(data model.WithdrawMoneyRequest) error {
+	m := gomail.NewMessage()
+
+	m.SetHeader("From", os.Getenv("SMTP_USER"))
+	m.SetHeader("To", os.Getenv("RECEIVER_EMAIL"))
+	m.SetHeader("Subject", fmt.Sprintf("📤 Solicitação de Saque Recebida de %s", data.Name))
+
+	htmlBody := fmt.Sprintf(`
+		<html>
+		<body style="background-color:black;color:white;padding:20px;font-family:sans-serif;">
+			<div style="text-align:left;margin-bottom:20px;margin-left:10px;">
+				<img src="https://raw.githubusercontent.com/DhioneCastilhoBarbosa/hubinscar/dbae7b6ec92e75430765ddac74ec034f8714adde/src/assets/LOGO%%20BRANCA.png" alt="Logo" style="max-width:100px;">
+			</div>
+			<div style="color:black;background-color:white;padding:20px;border-radius:10px;">
+				<h2>💰 Solicitação de Saque</h2>
+				<p><strong>Nome:</strong> %s</p>
+				<p><strong>CPF:</strong> %s</p>
+				<p><strong>CNPJ:</strong> %s</p>
+				<p><strong>Banco:</strong> %s</p>
+				<p><strong>Chave Pix:</strong> %s</p>
+				<p><strong>Valor:</strong> R$ %.2f</p>
+				<p><strong>Data da Solicitação:</strong> %s</p>
+				<p style="color:red">⚠️ Verifique os dados antes de realizar a transferência.</p>
+			</div>
+		</body>
+		</html>
+	`,
+		data.Name,
+		data.CPF,
+		data.CNPJ,
+		data.BankName,
+		data.Key,
+		data.Value,
+		data.Request_Date,
+	)
+
+	m.SetBody("text/html", htmlBody)
+
+	port, err := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	if err != nil {
+		return fmt.Errorf("invalid SMTP_PORT: %v", err)
+	}
+
+	d := gomail.NewDialer(
+		os.Getenv("SMTP_HOST"),
+		port,
+		os.Getenv("SMTP_USER"),
+		os.Getenv("SMTP_PASS"),
+	)
+	d.SSL = false // ajuste conforme necessário
+
+	return d.DialAndSend(m)
+}
